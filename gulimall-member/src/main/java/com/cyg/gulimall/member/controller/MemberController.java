@@ -35,6 +35,7 @@ public class MemberController {
      */
     @RequestMapping("/test")
     public R test(){
+        // TODO 测试feign 模块远程调用
         MemberEntity memberEntity = new MemberEntity();
         memberEntity.setNickname("张三");
         R membercoupons = couponFeignService.membercoupons();
