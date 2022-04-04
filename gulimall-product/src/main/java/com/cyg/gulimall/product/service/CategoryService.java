@@ -20,6 +20,7 @@ public interface CategoryService extends IService<CategoryEntity> {
 
     /**
      * 查出所有分类，以及子分类
+     *
      * @return
      */
     List<CategoryEntity> listWithTree();

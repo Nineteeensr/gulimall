@@ -15,6 +15,7 @@ import java.io.InputStream;
 class GulimallThirdPartyApplicationTests {
     @Autowired
     OSSClient ossClient;
+
     @Test
     void contextLoads() throws FileNotFoundException {
         // 填写Bucket名称，例如examplebucket。
@@ -23,7 +24,7 @@ class GulimallThirdPartyApplicationTests {
         String objectName = "huawei.png";
         // 填写本地文件的完整路径，例如D:\\localpath\\examplefile.txt。
         // 如果未指定本地路径，则默认从示例程序所属项目对应本地路径中上传文件流。
-        String filePath= "E:\\谷粒商城\\01-分布式基础篇\\商品图片素材\\huawei.png";
+        String filePath = "E:\\谷粒商城\\01-分布式基础篇\\商品图片素材\\huawei.png";
         try {
             InputStream inputStream = new FileInputStream(filePath);
             // 创建PutObject请求。

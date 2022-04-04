@@ -6,12 +6,12 @@ import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 秒杀活动商品关联
- * 
+ *
  * @author CuiYuangeng
  * @email 1021716024@qq.com
  * @date 2022-03-12 16:35:03
  */
 @Mapper
 public interface SeckillSkuRelationDao extends BaseMapper<SeckillSkuRelationEntity> {
-	
+
 }

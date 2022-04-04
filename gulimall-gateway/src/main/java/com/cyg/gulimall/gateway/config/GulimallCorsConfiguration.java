@@ -13,7 +13,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 @Configuration
 public class GulimallCorsConfiguration {
     @Bean
-    public CorsWebFilter corsWebFilter(){
+    public CorsWebFilter corsWebFilter() {
         // 基于url跨域
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         // 跨域配置信息

@@ -6,12 +6,12 @@ import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 积分变化历史记录
- * 
+ *
  * @author CuiYuangeng
  * @email 1021716024@qq.com
  * @date 2022-03-12 16:42:09
  */
 @Mapper
 public interface IntegrationChangeHistoryDao extends BaseMapper<IntegrationChangeHistoryEntity> {
-	
+
 }

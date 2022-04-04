@@ -58,6 +58,7 @@ public class CategoryController {
 
     /**
      * 批量修改
+     *
      * @param category
      * @return
      */
@@ -66,6 +67,7 @@ public class CategoryController {
         categoryService.updateBatchById(Arrays.asList(category));
         return R.ok();
     }
+
     /**
      * 修改
      */

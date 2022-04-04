@@ -29,11 +29,11 @@ public class GulimallExceptionControllerAdvice {
         bindingResult.getFieldErrors().forEach((filedError) -> {
             errorMap.put(filedError.getField(), filedError.getDefaultMessage());
         });
-        return R.error(BizCodeEnume.VAILD_EXCEPTION.getCode(),BizCodeEnume.VAILD_EXCEPTION.getMsg()).put("data", errorMap);
+        return R.error(BizCodeEnume.VAILD_EXCEPTION.getCode(), BizCodeEnume.VAILD_EXCEPTION.getMsg()).put("data", errorMap);
     }
 
     @ExceptionHandler(value = Throwable.class)
-    public R handleException(Throwable throwable){
-        return R.error(BizCodeEnume.UNKNOW_EXCEPTION.getCode(),BizCodeEnume.UNKNOW_EXCEPTION.getMsg());
+    public R handleException(Throwable throwable) {
+        return R.error(BizCodeEnume.UNKNOW_EXCEPTION.getCode(), BizCodeEnume.UNKNOW_EXCEPTION.getMsg());
     }
 }

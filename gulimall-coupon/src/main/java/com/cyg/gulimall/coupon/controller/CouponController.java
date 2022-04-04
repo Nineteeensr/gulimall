@@ -33,13 +33,14 @@ public class CouponController {
     private Integer age;
 
     @RequestMapping("/test")
-    public R test(){
+    public R test() {
         return R.ok().put("name", name).put("age", age);
     }
 
 
     /**
      * 测试
+     *
      * @return
      */
     @RequestMapping("/member/list")
