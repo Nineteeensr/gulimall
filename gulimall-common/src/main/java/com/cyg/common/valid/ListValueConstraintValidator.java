@@ -6,24 +6,30 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * 自定义校验器
+ * @author Cui
+ */
 public class ListValueConstraintValidator implements ConstraintValidator<ListValue, Integer> {
 
     private Set<Integer> set = new HashSet<>();
 
-    //初始化方法
+    /**
+     * 初始化方法
+     * @param constraintAnnotation
+     */
     @Override
     public void initialize(ListValue constraintAnnotation) {
 
-        int[] vals = constraintAnnotation.vals();
-        for (int val : vals) {
+        int[] values = constraintAnnotation.values();
+        for (int val : values) {
             set.add(val);
         }
 
     }
 
-    //判断是否校验成功
-
     /**
+     * 判断是否校验成功
      * @param value   需要校验的值
      * @param context
      * @return

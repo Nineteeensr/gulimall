@@ -1,10 +1,11 @@
 package com.cyg.gulimall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cyg.common.valid.AddGroup;
+import com.cyg.common.valid.ListValue;
 import com.cyg.common.valid.UpdateGroup;
+import com.cyg.common.valid.UpdateStatusGroup;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
@@ -33,7 +34,7 @@ public class BrandEntity implements Serializable {
     /**
      * 品牌名
      */
-    @NotBlank(message = "品牌名不能为空", groups = {AddGroup.class, UpdateGroup.class})
+    @NotBlank(message = "品牌名不能为空", groups = {AddGroup.class})
     private String name;
     /**
      * 品牌logo地址
@@ -48,14 +49,14 @@ public class BrandEntity implements Serializable {
     /**
      * 显示状态[0-不显示；1-显示]
      */
-    @NotNull
-    @TableLogic(value = "1", delval = "0")
+    @NotNull(message = "显示状态不能为空",groups = {AddGroup.class})
+    @ListValue(values = {0, 1}, groups = {AddGroup.class,UpdateStatusGroup.class})
     private Integer showStatus;
     /**
      * 检索首字母
      */
     @NotEmpty(message = "检索首字母不能为空", groups = {AddGroup.class})
-    @Pattern(regexp = "/^[a-zA-Z]$/", message = "检索首字母必须是a-z或A-Z的一个字母", groups = {AddGroup.class, UpdateGroup.class})
+    @Pattern(regexp = "^[a-zA-Z]$", message = "检索首字母必须是a-z或A-Z的一个字母", groups = {AddGroup.class, UpdateGroup.class})
     private String firstLetter;
     /**
      * 排序
