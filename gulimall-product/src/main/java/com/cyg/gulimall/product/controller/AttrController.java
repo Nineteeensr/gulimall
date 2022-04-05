@@ -26,6 +26,20 @@ public class AttrController {
     private AttrService attrService;
 
     /**
+     * 查询规格参数列表
+     *
+     * @param params
+     * @param catelogId
+     * @return
+     */
+    @GetMapping("/base/list/{catelogId}")
+    public R baseAttrList(@RequestParam Map<String, Object> params, @PathVariable Long catelogId) {
+        PageUtils page = attrService.queryBaseAttr(params, catelogId);
+        return R.ok().put("page", page);
+    }
+
+
+    /**
      * 列表
      */
     @RequestMapping("/list")

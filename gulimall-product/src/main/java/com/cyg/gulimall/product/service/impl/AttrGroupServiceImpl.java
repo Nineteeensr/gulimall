@@ -32,21 +32,17 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         String key = (String) params.get("key");
         // select * from psm_attr_group where catelog_id = ? and (attr_group_id = key or attr_group_name like %key%)
         QueryWrapper<AttrGroupEntity> wrapper = new QueryWrapper<>();
+        if (categlogId != 0) {
+            wrapper.eq("catelog_id", categlogId);
+        }
         if (!StringUtils.isEmpty(key)) {
             wrapper.and((obj) -> {
                 obj.eq("attr_group_id", key).or().like("attr_group_name", key);
             });
         }
-        if (categlogId == 0) {
-            IPage<AttrGroupEntity> page = this.page(new Query<AttrGroupEntity>().getPage(params)
-                    , wrapper);
-            return new PageUtils(page);
-        } else {
-            wrapper.eq("catelog_id", categlogId);
-            IPage<AttrGroupEntity> page = this.page(new Query<AttrGroupEntity>().getPage(params)
-                    , wrapper);
-            return new PageUtils(page);
-        }
+        IPage<AttrGroupEntity> page = this.page(new Query<AttrGroupEntity>().getPage(params)
+                , wrapper);
+        return new PageUtils(page);
     }
 
 }
