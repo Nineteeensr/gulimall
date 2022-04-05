@@ -64,7 +64,8 @@ public class BrandController {
      */
     @RequestMapping("/update")
     public R update(@Validated({UpdateGroup.class})@RequestBody BrandEntity brand) {
-        brandService.updateById(brand);
+        // 更新关联表中的品牌信息
+        brandService.updateDetail(brand);
 
         return R.ok();
     }
