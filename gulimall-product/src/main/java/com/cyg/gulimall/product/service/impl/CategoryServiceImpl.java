@@ -61,6 +61,28 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return level1Menus;
     }
 
+    /**
+     * 递归查找所有菜单的子菜单
+     *
+     * @param root
+     * @param all
+     * @return
+     */
+    private List<CategoryEntity> getChildrens(CategoryEntity root, List<CategoryEntity> all) {
+        List<CategoryEntity> children = all.stream()
+                .filter(categoryEntity -> categoryEntity.getParentCid().longValue() == root.getCatId())
+                .map(categoryEntity -> {
+                    // 递归找子菜单
+                    categoryEntity.setChildren(getChildrens(categoryEntity, all));
+                    return categoryEntity;
+                })
+                // 排序
+                .sorted((menu1, menu2) -> (menu1.getSort() == null ? 0 : menu1.getSort())
+                        - (menu2.getSort() == null ? 0 : menu2.getSort()))
+                .collect(Collectors.toList());
+        return children;
+    }
+
     @Override
     public void removeMunesByIds(List<Long> longs) {
         // TODO 1、检查当前菜单是否被别的地方引用
@@ -105,25 +127,5 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return path;
     }
 
-    /**
-     * 递归查找所有菜单的子菜单
-     *
-     * @param root
-     * @param all
-     * @return
-     */
-    private List<CategoryEntity> getChildrens(CategoryEntity root, List<CategoryEntity> all) {
-        List<CategoryEntity> children = all.stream()
-                .filter(categoryEntity -> categoryEntity.getParentCid().longValue() == root.getCatId())
-                .map(categoryEntity -> {
-                    // 递归找子菜单
-                    categoryEntity.setChildren(getChildrens(categoryEntity, all));
-                    return categoryEntity;
-                })
-                // 排序
-                .sorted((menu1, menu2) -> (menu1.getSort() == null ? 0 : menu1.getSort())
-                        - (menu2.getSort() == null ? 0 : menu2.getSort()))
-                .collect(Collectors.toList());
-        return children;
-    }
+
 }
