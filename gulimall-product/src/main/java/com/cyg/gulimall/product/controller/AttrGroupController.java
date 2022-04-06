@@ -2,13 +2,17 @@ package com.cyg.gulimall.product.controller;
 
 import com.cyg.common.utils.PageUtils;
 import com.cyg.common.utils.R;
+import com.cyg.gulimall.product.entity.AttrEntity;
 import com.cyg.gulimall.product.entity.AttrGroupEntity;
 import com.cyg.gulimall.product.service.AttrGroupService;
+import com.cyg.gulimall.product.service.AttrService;
 import com.cyg.gulimall.product.service.CategoryService;
+import com.cyg.gulimall.product.vo.AttrGroupRelationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -26,16 +30,28 @@ public class AttrGroupController {
     private AttrGroupService attrGroupService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private AttrService attrService;
+
+    /**
+     * 获取属性分组的关联的所有属性
+     * @param attrgroupId
+     * @return
+     */
+    @GetMapping("/{attrgroupId}/attr/relation")
+    public R attrRelation(@PathVariable("attrgroupId") Long attrgroupId){
+        List<AttrEntity> attrEntities = attrService.getRelationAttr(attrgroupId);
+        return R.ok().put("data", attrEntities);
+    }
+
     /**
      * 列表
      */
     @RequestMapping("/list/{catelogId}")
     public R list(@RequestParam Map<String, Object> params, @PathVariable Long catelogId) {
-        //PageUtils page = attrGroupService.queryPage(params);
         PageUtils page = attrGroupService.queryPage(params, catelogId);
         return R.ok().put("page", page);
     }
-
 
     /**
      * 信息
@@ -66,6 +82,17 @@ public class AttrGroupController {
     public R update(@RequestBody AttrGroupEntity attrGroup) {
         attrGroupService.updateById(attrGroup);
 
+        return R.ok();
+    }
+
+    /**
+     * 批量删除
+     * @param vos
+     * @return
+     */
+    @PostMapping("/attr/relation/delete")
+    public R deleteRelation(@RequestBody AttrGroupRelationVo[] vos){
+        attrService.deleteRelation(vos);
         return R.ok();
     }
 

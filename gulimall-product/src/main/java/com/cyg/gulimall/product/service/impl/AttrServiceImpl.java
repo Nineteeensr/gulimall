@@ -17,6 +17,7 @@ import com.cyg.gulimall.product.entity.AttrGroupEntity;
 import com.cyg.gulimall.product.entity.CategoryEntity;
 import com.cyg.gulimall.product.service.AttrService;
 import com.cyg.gulimall.product.service.CategoryService;
+import com.cyg.gulimall.product.vo.AttrGroupRelationVo;
 import com.cyg.gulimall.product.vo.AttrRespVo;
 import com.cyg.gulimall.product.vo.AttrVo;
 import org.apache.commons.lang.StringUtils;
@@ -26,9 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -203,7 +202,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     /**
-     * 删除规格参数
+     * 删除规格参数 TODO
      * 操作 1) pms_attr
      * 2) attr_attrgroup_relation
      *
@@ -220,10 +219,49 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         for (Long attrId : longs) {
             AttrAttrgroupRelationEntity relationEntity = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>()
                     .eq("attr_id", attrId));
+            // 如果为空说明是销售属性：销售属性无需在关联表中关联
+            if (relationEntity == null) {
+                return;
+            }
             list.add(relationEntity.getId());
         }
         // 根据Id删除attr_attrgroup_relation
         relationDao.deleteBatchIds(list);
+    }
+
+
+    /**
+     * 根据分组Id查找关联的所有基本属性
+     * @param attrgroupId
+     * @return
+     */
+    @Override
+    public List<AttrEntity> getRelationAttr(Long attrgroupId) {
+        // 根据attr_group_id 去关联表（attr_attrgroup_relation）中查attr_id
+        List<AttrAttrgroupRelationEntity> entities = relationDao.selectList(new QueryWrapper<AttrAttrgroupRelationEntity>()
+                .eq("attr_group_id", attrgroupId));
+        if (!entities.isEmpty()) {
+            List<Long> list = entities.stream().map(attr -> attr.getAttrId()).collect(Collectors.toList());
+            // 再根据attr_id 去（attr）表查基本属性
+            Collection<AttrEntity> attrEntities = this.listByIds(list);
+            return (List<AttrEntity>) attrEntities;
+        }
+        return null;
+    }
+
+    /**
+     * 批量删除（attr_attrgroup_relation）
+     * @param vos
+     */
+    @Override
+    public void deleteRelation(AttrGroupRelationVo[] vos) {
+        List<AttrAttrgroupRelationEntity> entities = Arrays.asList(vos).stream().map(item -> {
+            AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
+            BeanUtils.copyProperties(item, relationEntity);
+            return relationEntity;
+        }).collect(Collectors.toList());
+        // 批量删除
+        relationDao.deleteBatchRelation(entities);
     }
 
 }
