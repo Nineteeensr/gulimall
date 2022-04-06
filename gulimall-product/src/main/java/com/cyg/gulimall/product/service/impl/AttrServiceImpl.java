@@ -232,6 +232,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 根据分组Id查找关联的所有基本属性
+     *
      * @param attrgroupId
      * @return
      */
@@ -251,6 +252,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 批量删除（attr_attrgroup_relation）
+     *
      * @param vos
      */
     @Override
@@ -262,6 +264,45 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         }).collect(Collectors.toList());
         // 批量删除
         relationDao.deleteBatchRelation(entities);
+    }
+
+    /**
+     * 获取当前分组没有关联的数据
+     *
+     * @param params
+     * @param attrgroupId
+     * @return
+     */
+    @Override
+    public PageUtils getNoRelationAttr(Map<String, Object> params, Long attrgroupId) {
+        // 1、当前分组只能关联自己所属分类的所有属性
+        AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrgroupId);
+        Long catelogId = attrGroupEntity.getCatelogId();
+
+        // 2、只能关联别的分组没有引用的属性
+        //  1) 当前分类下的其他分组
+        List<AttrGroupEntity> groupEntities = attrGroupDao.selectList(new QueryWrapper<AttrGroupEntity>()
+                .eq("catelog_id", catelogId));
+        List<Long> collect = groupEntities.stream().map(item -> item.getAttrGroupId()).collect(Collectors.toList());
+
+        //  2) 这些分组关联的属性
+        List<AttrAttrgroupRelationEntity> groupId = relationDao.selectList(new QueryWrapper<AttrAttrgroupRelationEntity>()
+                .in("attr_group_id", collect));
+        List<Long> attrIds = groupId.stream().map(item -> item.getAttrId()).collect(Collectors.toList());
+
+        //  3) 从当前分类的所有属性中移除这些属性 【注意这里只查询基本属性】
+        QueryWrapper<AttrEntity> wrapper = new QueryWrapper<AttrEntity>()
+                .eq("catelog_id", catelogId).eq("attr_type", ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode());
+        if (!attrIds.isEmpty()) {
+            wrapper.notIn("attr_id", attrIds);
+        }
+        // 关键字模糊查询
+        String key = (String) params.get("key");
+        if (StringUtils.isEmpty(key)) {
+            wrapper.and(w -> w.eq("attr_id", key).or().like("attr_name", key).or().like("value_select", key));
+        }
+        IPage<AttrEntity> page = this.page(new Query<AttrEntity>().getPage(params), wrapper);
+        return new PageUtils(page);
     }
 
 }
