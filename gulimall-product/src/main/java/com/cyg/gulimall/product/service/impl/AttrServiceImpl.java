@@ -57,7 +57,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     /**
-     * 保存规格参数到关联表和主表中
+     * 保存规格参数到管理表和主表中
      *
      * @param attr
      */
