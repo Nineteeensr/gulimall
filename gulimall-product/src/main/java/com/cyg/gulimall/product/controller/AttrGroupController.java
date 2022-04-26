@@ -4,6 +4,7 @@ import com.cyg.common.utils.PageUtils;
 import com.cyg.common.utils.R;
 import com.cyg.gulimall.product.entity.AttrEntity;
 import com.cyg.gulimall.product.entity.AttrGroupEntity;
+import com.cyg.gulimall.product.service.AttrAttrgroupRelationService;
 import com.cyg.gulimall.product.service.AttrGroupService;
 import com.cyg.gulimall.product.service.AttrService;
 import com.cyg.gulimall.product.service.CategoryService;
@@ -32,6 +33,17 @@ public class AttrGroupController {
     private CategoryService categoryService;
     @Autowired
     private AttrService attrService;
+    @Autowired
+    private AttrAttrgroupRelationService relationService;
+
+    @PostMapping("/attr/relation")
+    public R addRelation(@RequestBody List<AttrGroupRelationVo> attrGroupRelationVos) {
+        relationService.saveBatch(attrGroupRelationVos);
+        return R.ok();
+    }
+
+
+
 
     /**
      * 获取属性分组的关联的所有属性

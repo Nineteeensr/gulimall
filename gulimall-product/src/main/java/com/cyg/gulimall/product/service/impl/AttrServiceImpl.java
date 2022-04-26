@@ -22,7 +22,6 @@ import com.cyg.gulimall.product.vo.AttrRespVo;
 import com.cyg.gulimall.product.vo.AttrVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,16 +34,16 @@ import java.util.stream.Collectors;
 public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements AttrService {
 
     @Resource
-    AttrAttrgroupRelationDao relationDao;
+    private AttrAttrgroupRelationDao relationDao;
 
     @Resource
-    AttrGroupDao attrGroupDao;
+    private AttrGroupDao attrGroupDao;
 
     @Resource
-    CategoryDao categoryDao;
+    private CategoryDao categoryDao;
 
-    @Autowired
-    CategoryService categoryService;
+    @Resource
+    private CategoryService categoryService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -59,7 +58,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     /**
      * 保存规格参数到关联表和主表中
      *
-     * @param attr
+     * @param attr -
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -70,7 +69,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         BeanUtils.copyProperties(attr, attrEntity);
         this.save(attrEntity);
         // 2、保存关联关系
-        if (attr.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()) {
+        if (attr.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() && attr.getAttrGroupId() != null) {
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
             // 关联表relation的 attr_group_id 和
             relationEntity.setAttrGroupId(attr.getAttrGroupId());
