@@ -98,6 +98,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      */
     @Override
     public Long[] findCatelogPath(Long catelogId) {
+        if (catelogId == null) {
+            return null;
+        }
         List<Long> path = new ArrayList<>();
         List<Long> parentPath = findParentPath(catelogId, path);
         Collections.reverse(parentPath);

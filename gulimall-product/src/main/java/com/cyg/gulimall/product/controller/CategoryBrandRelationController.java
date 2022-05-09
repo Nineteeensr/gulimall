@@ -3,14 +3,17 @@ package com.cyg.gulimall.product.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cyg.common.utils.PageUtils;
 import com.cyg.common.utils.R;
+import com.cyg.gulimall.product.entity.BrandEntity;
 import com.cyg.gulimall.product.entity.CategoryBrandRelationEntity;
 import com.cyg.gulimall.product.service.CategoryBrandRelationService;
+import com.cyg.gulimall.product.vo.BrandsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -38,7 +41,17 @@ public class CategoryBrandRelationController {
         return R.ok().put("data", list);
     }
 
-
+    @GetMapping("/brands/list")
+    public R relationBrandsList(@RequestParam(value = "catId", required = true) Long catId) {
+        List<BrandEntity> brandList = categoryBrandRelationService.getBrandsByCatId(catId);
+        List<BrandsVo> brandsVos = brandList.stream().map(item -> {
+            BrandsVo brandsVo = new BrandsVo();
+            brandsVo.setBrandId(item.getBrandId());
+            brandsVo.setBrandName(item.getName());
+            return brandsVo;
+        }).collect(Collectors.toList());
+        return R.ok().put("data", brandsVos);
+    }
 
     /**
      * 列表
